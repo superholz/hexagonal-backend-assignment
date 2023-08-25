@@ -19,9 +19,7 @@ should include the following components:
     * Share a measurement: Allow users to share a measurement with an additional comment with the administration
       system (HIS) of
       their healthcare provider. Save the time of sharing and the comment in the database so the user can see which
-      measurements are previously shared. Use the provided stub implementation of the external system
-      [StubHealthcareInformationSystem](src/main/kotlin/nl/topicus/healthcare/hexagonalbackendassignment/infrastructure/his/StubHealthcareInformationSystem.kt)
-      to send the measurement to the external system.
+      measurements are previously shared. You can use the provided stub implementation ([StubHealthcareInformationSystem](src/main/kotlin/nl/topicus/healthcare/hexagonalbackendassignment/infrastructure/his/StubHealthcareInformationSystem.kt)) as       the external system to send the measurement to the external system.
 
 2. Management Endpoints:
     * Add a patient: Enable the addition of new patients.
