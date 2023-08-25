@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:./testdb/.testdb;DATABASE_TO_UPPER=false;CASE_INSENSITIVE_IDENTIFIERS=true;AUTO_SERVER=true
+  liquibase:
+    change-log: classpath:db/db.changelog-master.xml
+  h2:
+    console:
+      enabled: true
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
