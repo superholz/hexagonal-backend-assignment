@@ -1,6 +1,8 @@
 package nl.topicus.healthcare.hexagonalbackendassignment.domain
 
+import java.util.UUID
+
 class Patient(
-    val id: Long,
-    val name: String
+    val id: UUID,
+    val name: String,
 )

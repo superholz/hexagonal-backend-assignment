@@ -25,7 +25,7 @@ should include the following components:
     * Add a patient: Enable the addition of new patients.
     * Remove a patient: Allow the removal of patients.
     * List all patients: Retrieve a list of all registered patients.
-
+    
 3. Hexagonal Architecture:
    Organize your application using the Hexagonal Architecture pattern. The core domain logic should be isolated from
    external

@@ -4,10 +4,10 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
 
-    <changeSet author="Jan Verhoeckx" id="patients">
+    <changeSet author="Sebastian Holzapfel" id="patients">
         <createTable tableName="patient">
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="PK-taak-id"/>
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" primaryKeyName="id"/>
             </column>
             <column name="name" type="text">
                 <constraints nullable="false"/>
@@ -15,8 +15,12 @@
         </createTable>
 
         <sql>
-            INSERT INTO patient (name) VALUES ('John'), ('Jane');
+            INSERT INTO patient (id, name) VALUES
+                                               ('5cbda1e6-f582-41b2-a78b-88327d4db5c1','John'),
+                                               ('1b441d8f-2146-4cf4-a75a-f760c5dbf40e','Jane');
         </sql>
     </changeSet>
 
 </databaseChangeLog>
+
+

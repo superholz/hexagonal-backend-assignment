@@ -1,6 +1,6 @@
 package nl.topicus.healthcare.hexagonalbackendassignment.infrastructure.repository
 
 import org.springframework.data.repository.CrudRepository
+import java.util.UUID
 
-interface PatientRepository : CrudRepository<PatientData, Long> {
-}
+interface PatientCrudRepository : CrudRepository<Patient, UUID>
