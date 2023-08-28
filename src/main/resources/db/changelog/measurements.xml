@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+
+    <changeSet author="Sebastian Holzapfel" id="measurements">
+        <createTable tableName="measurement">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" primaryKeyName="measurementId"/>
+            </column>
+            <column name="patient_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="measure_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment" type="text">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <sql>
+            insert
+            into
+                measurement (id, patient_id, "type", "value", unit, comment, measure_time)
+            values
+                ('98e8a4f8-2824-4ec3-a730-f609475f0dab',
+                 '5cbda1e6-f582-41b2-a78b-88327d4db5c1',
+                 'BLOOD_SUGAR',
+                 '30',
+                 'MMOL',
+                 'Comment for the measurement',
+                 '2023-08-28 15:30:00');
+
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+
+

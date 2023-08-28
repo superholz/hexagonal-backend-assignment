@@ -5,6 +5,7 @@ import java.util.UUID
 
 interface PatientRepository {
     fun findAll(): List<Patient>
+    fun getOne(id: UUID): Patient
     fun addOne(patient: Patient)
     fun deleteOne(id: UUID)
 }
