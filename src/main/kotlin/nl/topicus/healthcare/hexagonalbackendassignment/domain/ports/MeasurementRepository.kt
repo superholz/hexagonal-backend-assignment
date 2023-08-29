@@ -5,4 +5,7 @@ import java.util.UUID
 
 interface MeasurementRepository {
     fun findForPatient(patientId: UUID): List<Measurement>
+    fun addOne(measurement: Measurement)
+
+    fun deleteOne(measurementId: UUID)
 }

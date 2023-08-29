@@ -12,5 +12,5 @@ data class Measurement(
     val value: String,
     val unit: String,
     val measureTime: Instant,
-    val comment: String
+    val comment: String?
 )

@@ -1,19 +1,40 @@
 package nl.topicus.healthcare.hexagonalbackendassignment.domain
 
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.errors.InternalErrorException
-import nl.topicus.healthcare.hexagonalbackendassignment.infrastructure.his.MeasurementUnit
 import java.time.Instant
 import java.util.UUID
 
-data class Measurement(
+data class Measurement (
     val id: UUID,
     val patient: Patient,
     val type: MeasurementType,
     val value: String,
     val unit: MeasurementUnit,
     val measureTime: Instant,
-    val comment: String
-)
+    val comment: String?
+) {
+    companion object {
+        fun createMeasurement(id: UUID,
+                              patient: Patient,
+                              type: String,
+                              value: String,
+                              unit: String,
+                              measureTime: String,
+                              comment: String?
+
+        ): Measurement {
+            return Measurement(
+                id = id,
+                patient = patient,
+                type = MeasurementType.fromString(type),
+                value = value,
+                unit = MeasurementUnit.fromString(unit),
+                measureTime = Instant.parse(measureTime),
+                comment = comment,
+            )
+        }
+    }
+}
 
 
 enum class MeasurementUnit {
