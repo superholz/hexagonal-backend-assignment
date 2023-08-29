@@ -39,6 +39,5 @@ class AddMeasurementController(
             value = value,
             unit = unit,
             measureTime = measureTime,
-            comment = comment,
     )
 }

@@ -24,7 +24,7 @@
             <column name="measure_time" type="datetime">
                 <constraints nullable="false"/>
             </column>
-            <column name="comment" type="text">
+            <column name="status" type="text">
                 <constraints nullable="true"/>
             </column>
         </createTable>
@@ -32,16 +32,14 @@
         <sql>
             insert
             into
-                measurement (id, patient_id, "type", "value", unit, comment, measure_time)
+                measurement (id, patient_id, "type", "value", unit, measure_time)
             values
                 ('98e8a4f8-2824-4ec3-a730-f609475f0dab',
                  '5cbda1e6-f582-41b2-a78b-88327d4db5c1',
                  'BLOOD_SUGAR',
                  '30',
                  'MMOL',
-                 'Comment for the measurement',
                  '2023-08-28 15:30:00');
-
         </sql>
     </changeSet>
 

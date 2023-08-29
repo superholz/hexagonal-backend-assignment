@@ -3,6 +3,7 @@ package nl.topicus.healthcare.hexagonalbackendassignment.infrastructure.reposito
 import com.fasterxml.jackson.databind.ObjectMapper
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.Measurement
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.MeasurementForHis
+import nl.topicus.healthcare.hexagonalbackendassignment.domain.MeasurementStatus
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.MeasurementType
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.MeasurementUnit
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.Patient
@@ -32,6 +33,10 @@ class MeasurementRepositoryAdapter(
         template.insert(measurement.toMeasurementEntity())
     }
 
+    override fun persist(measurement: Measurement) {
+        repository.save(measurement.toMeasurementEntity())
+    }
+
     override fun getOne(measurementId: UUID): Measurement {
         val measurementEntity = repository.findById(measurementId).get()
         val patient = patientRepository.getOne(measurementEntity.patientId)
@@ -54,7 +59,7 @@ class MeasurementRepositoryAdapter(
             type = MeasurementType.fromString(type),
             value = value,
             unit = MeasurementUnit.fromString(unit),
-            comment = comment,
+            status =  if (status != null) MeasurementStatus.fromString(status) else null,
             measureTime = measureTime
         )
 
@@ -66,7 +71,7 @@ class MeasurementRepositoryAdapter(
             value = value,
             unit = unit.name,
             measureTime = measureTime,
-            comment = comment
+            status = status?.name
         )
 
     private fun MeasurementForHis.toLogline() =

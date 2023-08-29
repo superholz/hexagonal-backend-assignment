@@ -8,6 +8,8 @@ interface MeasurementRepository {
     fun findForPatient(patientId: UUID): List<Measurement>
     fun addOne(measurement: Measurement)
 
+    fun persist(measurement: Measurement)
+
     fun getOne(measurementId: UUID): Measurement
     fun deleteOne(measurementId: UUID)
     fun saveSharingLogLine(measurement: MeasurementForHis)

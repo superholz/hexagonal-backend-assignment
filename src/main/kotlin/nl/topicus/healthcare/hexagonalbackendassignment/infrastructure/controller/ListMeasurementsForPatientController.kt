@@ -34,7 +34,7 @@ class ListMeasurementsForPatientController(
         val value: String,
         val unit: String,
         val measureTime: Instant,
-        val comment: String?
+        val status: String?
     )
 
     private fun ListMeasurementsOfPatient.Output.toResponse() =
@@ -46,7 +46,7 @@ class ListMeasurementsForPatientController(
                 value = it.value,
                 unit = it.unit.name,
                 measureTime = it.measureTime,
-                comment = it.comment,
+                status = it.status?.name
             )
         }
 }

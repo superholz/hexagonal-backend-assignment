@@ -1,6 +1,7 @@
 package nl.topicus.healthcare.hexagonalbackendassignment.application
 
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.MeasurementForHis
+import nl.topicus.healthcare.hexagonalbackendassignment.domain.MeasurementStatus
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.ports.HisApi
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.ports.MeasurementRepository
 import org.springframework.stereotype.Service
@@ -13,7 +14,7 @@ class ShareMeasurementWithHis(
     private val repository: MeasurementRepository,
 ) {
     fun shareMeasurement(input: Input) {
-        val measurement = repository.getOne(input.id)
+        val measurement = repository.getOne(input.id).copy(status = MeasurementStatus.SHARED)
 
         val measurementToShare = MeasurementForHis(
             measurement = measurement,
@@ -23,6 +24,8 @@ class ShareMeasurementWithHis(
 
         hisApi.shareMeasurement(measurementToShare)
         repository.saveSharingLogLine(measurementToShare)
+
+        repository.persist(measurement)
 
     }
 

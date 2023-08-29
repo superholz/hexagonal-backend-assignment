@@ -11,7 +11,7 @@ data class Measurement (
     val value: String,
     val unit: MeasurementUnit,
     val measureTime: Instant,
-    val comment: String?
+    val status: MeasurementStatus?,
 ) {
     companion object {
         fun createMeasurement(id: UUID,
@@ -20,7 +20,7 @@ data class Measurement (
                               value: String,
                               unit: String,
                               measureTime: String,
-                              comment: String?
+                              status: MeasurementStatus?
 
         ): Measurement {
             return Measurement(
@@ -30,7 +30,7 @@ data class Measurement (
                 value = value,
                 unit = MeasurementUnit.fromString(unit),
                 measureTime = Instant.parse(measureTime),
-                comment = comment,
+                status = status,
             )
         }
 
@@ -66,4 +66,17 @@ enum class MeasurementType {
 
         class InconsistentMeasurementTypeException(override val message: String?) : InternalErrorException(message)
     }
+}
+
+enum class MeasurementStatus {
+    SHARED;
+    companion object {
+        fun fromString(status: String) =
+            MeasurementStatus.values().find { it.name == status } ?: throw InconsistentStatusException(
+                "Measurement status can not be found for string '$status'."
+            ).also { println(it) }
+
+        class InconsistentStatusException(override val message: String?) : InternalErrorException(message)
+    }
+
 }

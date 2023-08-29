@@ -22,7 +22,7 @@ class AddMeasurement(
             value = input.value,
             unit = input.unit,
             measureTime = input.measureTime,
-            comment = input.comment
+            status = null
         )
 
         repository.addOne(measurement)
@@ -35,7 +35,6 @@ class AddMeasurement(
         val value: String,
         val unit: String,
         val measureTime: String,
-        val comment: String?
     )
 
 

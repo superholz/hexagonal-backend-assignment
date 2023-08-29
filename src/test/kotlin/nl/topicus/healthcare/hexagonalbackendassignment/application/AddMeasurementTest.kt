@@ -55,7 +55,6 @@ class AddMeasurementTest(
         val result = slot.captured
 
         result.id shouldBe input.id
-        result.comment shouldBe input.comment
         result.measureTime shouldBe timeAsInstant
         result.patient.id shouldBe patient.id
         result.patient.name shouldBe patient.name
