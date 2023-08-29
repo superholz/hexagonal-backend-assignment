@@ -1,6 +1,8 @@
 package nl.topicus.healthcare.hexagonalbackendassignment.infrastructure.repository
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.Measurement
+import nl.topicus.healthcare.hexagonalbackendassignment.domain.MeasurementForHis
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.MeasurementType
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.MeasurementUnit
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.Patient
@@ -15,7 +17,8 @@ import nl.topicus.healthcare.hexagonalbackendassignment.infrastructure.repositor
 class MeasurementRepositoryAdapter(
     private val repository: MeasurementCrudRepository,
     private val patientRepository: PatientRepository,
-    private val template: JdbcAggregateTemplate
+    private val template: JdbcAggregateTemplate,
+    private val mapper: ObjectMapper,
 
     ) : MeasurementRepository {
     override fun findForPatient(patientId: UUID): List<Measurement> {
@@ -29,8 +32,19 @@ class MeasurementRepositoryAdapter(
         template.insert(measurement.toMeasurementEntity())
     }
 
+    override fun getOne(measurementId: UUID): Measurement {
+        val measurementEntity = repository.findById(measurementId).get()
+        val patient = patientRepository.getOne(measurementEntity.patientId)
+
+        return measurementEntity.toMeasurement(patient)
+    }
+
     override fun deleteOne(measurementId: UUID) {
         repository.deleteById(measurementId)
+    }
+
+    override fun saveSharingLogLine(measurement: MeasurementForHis) {
+        template.insert(measurement.toLogline())
     }
 
     private fun MeasurementEntity.toMeasurement(patient: Patient) =
@@ -54,5 +68,15 @@ class MeasurementRepositoryAdapter(
             measureTime = measureTime,
             comment = comment
         )
+
+    private fun MeasurementForHis.toLogline() =
+        MeasurementLogLine(
+            id = UUID.randomUUID(),
+            measurementId = measurement.id,
+            shareComment = comment,
+            timeOfSharing = timeOfSharing,
+            measurement = mapper.writeValueAsString(measurement)
+        )
+
 }
 
