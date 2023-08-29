@@ -12,5 +12,7 @@ interface MeasurementRepository {
 
     fun getOne(measurementId: UUID): Measurement
     fun deleteOne(measurementId: UUID)
+    fun deleteMany(ids: List<UUID>)
     fun saveSharingLogLine(measurement: MeasurementForHis)
+
 }

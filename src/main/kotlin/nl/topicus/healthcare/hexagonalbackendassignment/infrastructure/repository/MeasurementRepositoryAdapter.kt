@@ -48,6 +48,10 @@ class MeasurementRepositoryAdapter(
         repository.deleteById(measurementId)
     }
 
+    override fun deleteMany(ids: List<UUID>){
+        repository.deleteAllById(ids)
+    }
+
     override fun saveSharingLogLine(measurement: MeasurementForHis) {
         template.insert(measurement.toLogline())
     }

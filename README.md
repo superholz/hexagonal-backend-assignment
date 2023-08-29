@@ -102,4 +102,17 @@ The following guides illustrate how to use some features concretely:
 
 ## Implementation thoughts ##
  - get-methods should return the entity or throw an exception
- - find methid should return with entity or null
+ - find method should return with entity or null
+
+Todo
+- replace JPA repository through jdbc.
+- logging?
+- error handling (controller advise)
+
+- could be idea to make constructor of Measurement private to not accidentially create a measurement in the domain layer that
+does not ondergo data validation. But this makes it unflexible when converting to it from database
+
+- business logic to check if something exists - exception there be domain exception and probably not in repository
+- add validation for value in measurment upon creation
+- upon deletion of pationt also measurements should be deleted
+- add status when measurement is shared
