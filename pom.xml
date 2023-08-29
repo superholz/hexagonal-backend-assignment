@@ -71,6 +71,17 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.mock-server</groupId>
+			<artifactId>mockserver-spring-test-listener</artifactId>
+			<version>5.15.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>kotlin-extensions</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.ninja-squad</groupId>
 			<artifactId>springmockk</artifactId>
 			<version>4.0.2</version>

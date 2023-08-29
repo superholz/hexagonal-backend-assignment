@@ -1,6 +1,6 @@
 package nl.topicus.healthcare.hexagonalbackendassignment.domain
 
-import nl.topicus.healthcare.hexagonalbackendassignment.domain.errors.InternalErrorException
+import nl.topicus.healthcare.hexagonalbackendassignment.infrastructure.errors.WrongInputException
 import java.time.Instant
 import java.util.UUID
 
@@ -49,7 +49,7 @@ enum class MeasurementUnit {
                 "Measurement type can not be found for string '$unit'."
             ).also { println(it) }
 
-        class InconsistentUnitException(override val message: String?) : InternalErrorException(message)
+        class InconsistentUnitException(override val message: String?) : WrongInputException(message)
     }
 }
 
@@ -64,7 +64,7 @@ enum class MeasurementType {
                 "Measurement type can not be found for string '$type'."
             ).also { println(it) }
 
-        class InconsistentMeasurementTypeException(override val message: String?) : InternalErrorException(message)
+        class InconsistentMeasurementTypeException(override val message: String?) : WrongInputException(message)
     }
 }
 
@@ -76,7 +76,7 @@ enum class MeasurementStatus {
                 "Measurement status can not be found for string '$status'."
             ).also { println(it) }
 
-        class InconsistentStatusException(override val message: String?) : InternalErrorException(message)
+        class InconsistentStatusException(override val message: String?) : WrongInputException(message)
     }
 
 }

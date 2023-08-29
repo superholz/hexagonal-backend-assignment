@@ -12,6 +12,7 @@ import nl.topicus.healthcare.hexagonalbackendassignment.domain.ports.PatientRepo
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 import org.springframework.stereotype.Component
 import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
 import nl.topicus.healthcare.hexagonalbackendassignment.infrastructure.repository.Measurement as MeasurementEntity
 
 @Component
@@ -38,7 +39,9 @@ class MeasurementRepositoryAdapter(
     }
 
     override fun getOne(measurementId: UUID): Measurement {
-        val measurementEntity = repository.findById(measurementId).get()
+        val measurementEntity = repository.findById(measurementId).getOrNull() ?: throw MeasurementRepositoryException(
+            "Measurement with id '$measurementId' could not be found."
+        )
         val patient = patientRepository.getOne(measurementEntity.patientId)
 
         return measurementEntity.toMeasurement(patient)
@@ -88,4 +91,6 @@ class MeasurementRepositoryAdapter(
         )
 
 }
+
+class MeasurementRepositoryException(override val message: String?) : RuntimeException(message)
 

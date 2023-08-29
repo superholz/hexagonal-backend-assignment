@@ -104,9 +104,14 @@ The following guides illustrate how to use some features concretely:
  - get-methods should return the entity or throw an exception
  - find method should return with entity or null
 
+## Some business logic desicions due to lack of refinement
+
+- When a patient gets deleted also all his measurements get deleted. Sharing logs stay.
+- 
+
+
 Todo
 - replace JPA repository through jdbc.
-- logging?
 - error handling (controller advise)
 
 - could be idea to make constructor of Measurement private to not accidentially create a measurement in the domain layer that
@@ -114,5 +119,3 @@ does not ondergo data validation. But this makes it unflexible when converting t
 
 - business logic to check if something exists - exception there be domain exception and probably not in repository
 - add validation for value in measurment upon creation
-- upon deletion of pationt also measurements should be deleted
-- add status when measurement is shared
