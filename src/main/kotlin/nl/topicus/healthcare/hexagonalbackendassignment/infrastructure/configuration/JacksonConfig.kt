@@ -1,6 +1,7 @@
 package nl.topicus.healthcare.hexagonalbackendassignment.infrastructure.configuration
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.kotlinModule
 import org.springframework.context.annotation.Bean
@@ -13,6 +14,7 @@ class JacksonConfig {
         val objectMapper = ObjectMapper()
         objectMapper.registerModule(kotlinModule())
         objectMapper.registerModule(JavaTimeModule())
+        objectMapper.propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
         return objectMapper
     }
 }

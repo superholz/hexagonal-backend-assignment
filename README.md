@@ -99,6 +99,36 @@ The following guides illustrate how to use some features concretely:
 * [Using Spring Data JDBC](https://github.com/spring-projects/spring-data-examples/tree/master/jdbc/basics)
 
 
+## Implementation notes
+
+### Hexagonal design class and packaging structure
+The package structure was mostly used as provided with some changes:
+- Package `domain.ports` was added to define interfaces in the domain layer that can be implemented in the adapters of the
+infrastructural layer (inversion of dependency)
+- The code is organized as such that the use case are as much as possible independent from each other by using one controller 
+in infrastructural layer and one service in the domain layer. This makes it easy to remove or adapt functionality because
+for one use case responsibility is clearly separated into different classes.
+- Each layer and use case has it's own models. Only domain models are defined as separate classes in the `domain` package. 
+The models are therefore defined mostly within the classes using them. Often as nested classes. This might be a bit
+unconventional compared to approaches I have seen in the past. It gives the advantage of having classes independent.
+The nested class approach gives a little less headache on having good names for objects.
+- The `application` package is there to hold the business logic for the different use cases. Structuring it as such makes
+it very easy to see by the reader what the application is about and which use cases are implemented.
+- Universal business logic that adheres mostly to part of the domain is implemented within the domain object, more leaning
+to classical thought of OOP (but properties and behaviour in the same class). This originates of the [TellDontAsk](https://martinfowler.com/bliki/TellDontAsk.html)
+principle.
+
+### API design
+- Api design in this service mostly adheres to the [Zalando guidline](https://opensource.zalando.com/restful-api-guidelines/).
+- Api naming strategy has snake_case for api properties ad camelCase in the code. This is configured by setting a property
+naming strategy in jackson.
+- For list endpoints pagination should be still added.
+- Defining data types in the controllers should use mostly primitive values which are converted to specific types in the
+domain layer. This to keep good separation of concerns. However, for convenience and sake of simplicity
+ I did not follow this strictly: `UUID` is used already in controller level.
+
+
+
 
 ## Implementation thoughts ##
  - get-methods should return the entity or throw an exception

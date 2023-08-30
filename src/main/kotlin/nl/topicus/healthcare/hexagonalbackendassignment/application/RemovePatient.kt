@@ -12,13 +12,13 @@ class RemovePatient(
 ) {
     fun removePatient(input: Input) {
 
-        val measurementsOfPatient = measurementRepository.findForPatient(UUID.fromString(input.id))
+        val measurementsOfPatient = measurementRepository.findForPatient(input.id)
 
         measurementRepository.deleteMany(measurementsOfPatient.map { it.id })
-        repository.deleteOne(UUID.fromString(input.id))
+        repository.deleteOne(input.id)
     }
 
     data class Input(
-        val id: String,
+        val id: UUID,
     )
 }

@@ -10,7 +10,7 @@ class ListMeasurementsOfPatient(
     private val repository: MeasurementRepository
 ) {
     fun fetchAllMeasurementsForPatient(input: Input): Output {
-        val measurements =  repository.findForPatient(input.patientId)
+        val measurements = repository.findForPatient(input.patientId)
         return Output(measurements = measurements)
     }
 

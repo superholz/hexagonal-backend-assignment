@@ -15,9 +15,9 @@ class AddPatient(
     }
 
     data class Input(
-        val id: String,
+        val id: UUID,
         val name: String,
     )
 
-    private fun Input.toPatient() = Patient(id = UUID.fromString(id), name = name)
+    private fun Input.toPatient() = Patient(id = id, name = name)
 }

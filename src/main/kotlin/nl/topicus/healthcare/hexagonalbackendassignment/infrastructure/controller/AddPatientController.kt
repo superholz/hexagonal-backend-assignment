@@ -22,7 +22,7 @@ class AddPatientController(
     }
 
     private fun AddPatientRequest.createPatient() = AddPatient.Input(
-        id = UUID.randomUUID().toString(),
+        id = UUID.randomUUID(),
         name = name,
     )
 
