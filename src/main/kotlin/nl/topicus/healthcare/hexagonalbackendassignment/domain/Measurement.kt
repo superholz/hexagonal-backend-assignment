@@ -1,6 +1,8 @@
 package nl.topicus.healthcare.hexagonalbackendassignment.domain
 
+import nl.topicus.healthcare.hexagonalbackendassignment.domain.MeasurementType.Companion.hasCorrectUnit
 import nl.topicus.healthcare.hexagonalbackendassignment.infrastructure.errors.WrongInputException
+import java.math.BigDecimal
 import java.time.Instant
 import java.util.UUID
 
@@ -20,19 +22,32 @@ data class Measurement (
                               value: String,
                               unit: String,
                               measureTime: String,
-                              status: MeasurementStatus?
+                              status: MeasurementStatus? = null
 
         ): Measurement {
+
+            val numberValue = BigDecimal(value)
+            val typeEnum = MeasurementType.fromString(type)
+            val unitEnum = MeasurementUnit.fromString(unit)
+
+            require(MeasurementType.inRange(numberValue, typeEnum)) {
+                "Measurement value '$numberValue' is not in range for '${typeEnum.name}'"
+            }
+            require(typeEnum.hasCorrectUnit(unitEnum)) {
+                "Measurement for '${typeEnum.name}' has to be '${typeEnum.unit}' but was '${unitEnum.name}'"
+            }
+
             return Measurement(
                 id = id,
                 patient = patient,
-                type = MeasurementType.fromString(type),
+                type = typeEnum,
                 value = value,
-                unit = MeasurementUnit.fromString(unit),
+                unit = unitEnum,
                 measureTime = Instant.parse(measureTime),
                 status = status,
             )
         }
+
 
     }
 }
@@ -53,16 +68,21 @@ enum class MeasurementUnit {
     }
 }
 
-enum class MeasurementType {
-    BLOOD_SUGAR,
-    HEARTH_FREQUENCY,
-    BODY_WEIGHT;
+enum class MeasurementType(val minValue: BigDecimal, val maxValue: BigDecimal, val unit: MeasurementUnit) {
+    BLOOD_SUGAR(BigDecimal("0.0"), BigDecimal("300.00"), MeasurementUnit.MMOL),
+    HEARTH_FREQUENCY(BigDecimal("55.0"), BigDecimal("200.00"), MeasurementUnit.BEATS_PER_MINUTE),
+    BODY_WEIGHT(BigDecimal("2.0"), BigDecimal("150.00"), MeasurementUnit.KG);
 
     companion object {
         fun fromString(type: String) =
             MeasurementType.values().find { it.name == type } ?: throw InconsistentMeasurementTypeException(
                 "Measurement type can not be found for string '$type'."
             ).also { println(it) }
+
+        fun inRange(value: BigDecimal, type: MeasurementType):Boolean =
+            value >= type.minValue && value <= type.maxValue
+
+        fun MeasurementType.hasCorrectUnit(unit: MeasurementUnit) = this.unit == unit
 
         class InconsistentMeasurementTypeException(override val message: String?) : WrongInputException(message)
     }

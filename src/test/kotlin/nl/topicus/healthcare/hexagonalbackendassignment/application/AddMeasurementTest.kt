@@ -1,6 +1,7 @@
 package nl.topicus.healthcare.hexagonalbackendassignment.application
 
 import com.appmattus.kotlinfixture.kotlinFixture
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -16,7 +17,12 @@ import nl.topicus.healthcare.hexagonalbackendassignment.domain.ports.Measurement
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.ports.PatientRepository
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import java.time.Instant
+import java.util.UUID
+import java.util.stream.Stream
 
 @ExtendWith(MockKExtension::class)
 class AddMeasurementTest(
@@ -44,7 +50,7 @@ class AddMeasurementTest(
             )
 
         every { repository.addOne(any()) } returns Unit
-        every { patientRepository.getOne(any() )} returns patient
+        every { patientRepository.getOne(any()) } returns patient
 
         sut.addMeasurement(input)
 
@@ -63,4 +69,42 @@ class AddMeasurementTest(
         result.value shouldBe input.value
 
     }
+
+    @ParameterizedTest
+    @MethodSource("measurements")
+    fun `should throw an exception when the value is not in Range`(
+        type: String,
+        value: String,
+        unit: String,
+    ) {
+
+        shouldThrow<IllegalArgumentException> {
+            Measurement.createMeasurement(
+                id = UUID.randomUUID(),
+                patient = fixture<Patient>(),
+                type = type,
+                value = value,
+                unit = unit,
+                measureTime = Instant.now().toString()
+            )
+        }
+    }
+
+
+    companion object {
+        @JvmStatic
+        fun measurements(): Stream<Arguments> = Stream.of(
+            Arguments.of("BLOOD_SUGAR","-1","MMOL"),
+            Arguments.of("BLOOD_SUGAR","301","MMOL"),
+            Arguments.of("BLOOD_SUGAR","300.1","MMOL"),
+            Arguments.of("HEARTH_FREQUENCY","54.9","BEATS_PER_MINUTE"),
+            Arguments.of("HEARTH_FREQUENCY","201","BEATS_PER_MINUTE"),
+            Arguments.of("HEARTH_FREQUENCY","200.1","BEATS_PER_MINUTE"),
+            Arguments.of("BODY_WEIGHT","1.9","KG"),
+            Arguments.of("BODY_WEIGHT","150.1","KG"),
+        )
+
+    }
 }
+
+
