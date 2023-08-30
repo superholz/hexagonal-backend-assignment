@@ -28,11 +28,11 @@ class AddMeasurementIT {
             body(
                 """
                 |{
-                |"patientId": "5cbda1e6-f582-41b2-a78b-88327d4db5c1",
+                |"patient_id": "5cbda1e6-f582-41b2-a78b-88327d4db5c1",
                 |"type": "BLOOD_SUGAR",
-                |"value": "30",
+                |"value": "30.0",
                 |"unit": "MMOL",
-                | "measureTime": "2023-08-19T18:30:00Z"
+                |"measure_time": "2023-08-19T18:30:00Z"
                 |}
                 """.trimMargin()
             )

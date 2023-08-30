@@ -1,7 +1,7 @@
 package nl.topicus.healthcare.hexagonalbackendassignment.domain
 
 import nl.topicus.healthcare.hexagonalbackendassignment.domain.MeasurementType.Companion.hasCorrectUnit
-import nl.topicus.healthcare.hexagonalbackendassignment.infrastructure.errors.WrongInputException
+import nl.topicus.healthcare.hexagonalbackendassignment.domain.errors.WrongInputException
 import java.math.BigDecimal
 import java.time.Instant
 import java.util.UUID

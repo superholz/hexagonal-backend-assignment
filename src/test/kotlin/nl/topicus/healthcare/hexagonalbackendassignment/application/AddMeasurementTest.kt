@@ -46,7 +46,8 @@ class AddMeasurementTest(
             .copy(
                 unit = "MMOL",
                 type = "BLOOD_SUGAR",
-                measureTime = timeString
+                measureTime = timeString,
+                value = "10"
             )
 
         every { repository.addOne(any()) } returns Unit

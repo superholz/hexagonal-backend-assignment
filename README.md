@@ -201,8 +201,8 @@ domain layer. This to keep good separation of concerns. However, for convenience
 - Success HTTP codes should be meaningful e.g. getting a 201 back when creating a resource.
 - Failing endpoints should give meaningful error codes and should result into meaningful logging. E.g. when measurement
 can not be created because the measurement type is not known it should result in `400 Bad request` and log 
-a specific exception. I had troubles in getting the Exceptions and controller advice propery set up as well 
-setting up the logger gave me headaches which left me with println for the moment.
+a specific exception. Setttin up a proper logger gave me headaches which left me with println for the moment.
+- It is debatable if details about the exceptions should be included in the problem detail.
 - Depending on company strategy it maybe useful to have spec first approach and in any case generate an OpenAPI specification.
 
   
