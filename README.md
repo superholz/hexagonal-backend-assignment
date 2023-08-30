@@ -99,9 +99,76 @@ The following guides illustrate how to use some features concretely:
 * [Using Spring Data JDBC](https://github.com/spring-projects/spring-data-examples/tree/master/jdbc/basics)
 
 
-## Implementation notes
+## Implementation notes (Sebastian Holzapfel)
 
-### Hexagonal design class and packaging structure
+
+### Usage
+The project has the required endpoints implemented. To test them locally the following calls can be tried out after
+starting the application in an intelliJ http scratch file:
+
+**Create a patient:**
+
+```json
+POST http://localhost:8080/patients
+Content-Type: application/json
+{
+"name": "Sebastian"
+}
+```
+
+**List all patient:**
+```json
+GET http://localhost:8080/patients
+```
+
+**Create measurement for patient**
+```json
+###
+POST http://localhost:8080/measurements
+Content-Type: application/json
+
+{
+"patient_id": "5cbda1e6-f582-41b2-a78b-88327d4db5c1",
+"type": "BLOOD_SUGAR",
+"value": "40",
+"unit": "KG",
+"measure_time": "2023-08-19T18:30:00Z"
+}
+```
+
+**List measurement of a patient**
+```json
+###
+GET http://localhost:8080/patients/5cbda1e6-f582-41b2-a78b-88327d4db5c1/measurements
+```
+
+**Share a measurement with His**
+```json
+###
+PATCH http://localhost:8080/measurements
+Content-Type: application/json
+
+{
+  "measurement_id": "98e8a4f8-2824-4ec3-a730-f609475f0dab",
+  "comment": "This is a comment for sharing the measurement"
+}
+```
+
+**Delete a measurement**
+```json
+###
+DELETE http://localhost:8080/measurements/98e8a4f8-2824-4ec3-a730-f609475f0dab>
+```
+
+**Delete a patient**
+```json
+###
+DELETE http://localhost:8080/patients/5cbda1e6-f582-41b2-a78b-88327d4db5c1
+```
+
+
+
+### Hexagonal design, clean code, class and packaging structure
 The package structure was mostly used as provided with some changes:
 - Package `domain.ports` was added to define interfaces in the domain layer that can be implemented in the adapters of the
 infrastructural layer (inversion of dependency)
@@ -115,8 +182,12 @@ The nested class approach gives a little less headache on having good names for 
 - The `application` package is there to hold the business logic for the different use cases. Structuring it as such makes
 it very easy to see by the reader what the application is about and which use cases are implemented.
 - Universal business logic that adheres mostly to part of the domain is implemented within the domain object, more leaning
-to classical thought of OOP (but properties and behaviour in the same class). This originates of the [TellDontAsk](https://martinfowler.com/bliki/TellDontAsk.html)
+to classical thought of OOP (but properties and behaviour in the same class). This originates from the [TellDontAsk](https://martinfowler.com/bliki/TellDontAsk.html)
 principle.
+- Creation of Ids is done in controllers to let the domain layer clean and separate concerns. As a follow up, id creation 
+could be delegated to a low level interface to even better separate.
+
+
 
 ### API design
 - Api design in this service mostly adheres to the [Zalando guidline](https://opensource.zalando.com/restful-api-guidelines/).
@@ -126,26 +197,62 @@ naming strategy in jackson.
 - Defining data types in the controllers should use mostly primitive values which are converted to specific types in the
 domain layer. This to keep good separation of concerns. However, for convenience and sake of simplicity
  I did not follow this strictly: `UUID` is used already in controller level.
+- For Ids UUIDs are used to have more flexibility and control over their generation.
+- Success HTTP codes should be meaningful e.g. getting a 201 back when creating a resource.
+- Failing endpoints should give meaningful error codes and should result into meaningful logging. E.g. when measurement
+can not be created because the measurement type is not known it should result in `400 Bad request` and log 
+a specific exception. I had troubles in getting the Exceptions and controller advice propery set up as well 
+setting up the logger gave me headaches which left me with println for the moment.
+- Depending on company strategy it maybe useful to have spec first approach and in any case generate an OpenAPI specification.
 
+  
+### Testing strategy
 
+I have the following target in mind:
+- Having unit test as the basis of the testing pyramid. Using them for the layers of the application as slice test. Crossing 
+a boundary (e.g. from Application to Repository) results in having the boundary method mocked.
+- Having integration test to test wiring of different layers **within** the application. Ideally one happy case and one unhappy
+case. External services would be mocked.
+- Test behaviour, so not necessarily testing all correct wiring and mapping in each test.
+- Testing behaviour also means in not testing private methods but testing their functionality through the use case.
+- Test one thing per test.
+- One business logic change, ideally should leads only to one changing test.
+- Make use of auto-generated fixtures (kotlinFixture package) to have test less dependent on code changes and focus on
+ changes that do matter for the test case.
+- Redundant test should be deleted.
+- I used kotest matchers for assertions, because of the good readability.
 
+Clearly, not all of this was implemented in this exercise.
 
-## Implementation thoughts ##
- - get-methods should return the entity or throw an exception
- - find method should return with entity or null
+### Persistence layer
+- In this project I kept the H2 database for convenience. Replacing with e.g. an pgSQL database would be
+straightforward.
+- Naming convention
+    - get-methods should return the entity or throw an exception
+    - find method should return with entity or null
+- I'm not too happy about my current approach to implement the persistence layer. Especially 
+mixing the `CrudRepository` interface with more low level JDBC api calls. I think it would be 
+better to not use the CrudRepository and use plain SQL with JDBC for all cases. Due to time constraint
+I did not make this improvement. Due to the hexagonal design this ugliness can be dealt without effecting other parts
+of the code base.
+- Currently, the entities in the database have no foreign keys defined. In this first iteration I decided
+to keep it simple and handle it *manually in the code*. E.g. could be a good thing to have
+the patientId as a foreign key for the measurements in order to have the one-to-many relationship also coverd in the 
+database.
 
-## Some business logic desicions due to lack of refinement
-
+  
+### Some business logic decisions
 - When a patient gets deleted also all his measurements get deleted. Sharing logs stay.
-- 
+- When a measurement is shared a log is created about the sharing. There can be multiple logs per measurement.
+- When a measurement is shared once it gets a status of `SHARED`.
 
 
-Todo
-- replace JPA repository through jdbc.
-- error handling (controller advise)
-
-- could be idea to make constructor of Measurement private to not accidentially create a measurement in the domain layer that
-does not ondergo data validation. But this makes it unflexible when converting to it from database
-
-- business logic to check if something exists - exception there be domain exception and probably not in repository
-- add validation for value in measurment upon creation
+### Other thoughts for discussion
+- It could be idea to make constructor of Measurement private to not accidentally create a measurement in the domain layer that
+does not undergo data validation. But this makes it un-flexible when converting to it from database. I assume with this approach
+that only validated data makes it into the database. So being more strict on creation than at retrieval.
+- I really like the use of immutability. In the code base I recently worked with a pattern is to have domain objects mutable
+in order to prevent ugly calls to copy or static functions. 
+- Use of `value class` can be used to make the code safer to use and implement validation for properties. Not used here yet.
+- Authorization should be added to the service to limit access to the service. I was happy not to go down
+this rabbit whole for this exercise ;-).
