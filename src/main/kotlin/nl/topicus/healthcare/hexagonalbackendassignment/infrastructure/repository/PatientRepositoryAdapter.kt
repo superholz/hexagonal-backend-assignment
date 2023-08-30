@@ -12,6 +12,8 @@ import nl.topicus.healthcare.hexagonalbackendassignment.infrastructure.repositor
 @Component
 class PatientRepositoryAdapter(
     private val repository: PatientCrudRepository,
+    // the CrudRepository interface can not be used for inserting a new entity coming with an id, therefore
+    // the more low level JdbcAggregateTemplate is used for the insert.
     private val template: JdbcAggregateTemplate,
 
     ) : PatientRepository {
